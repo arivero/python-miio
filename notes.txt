@@ -1,0 +1,35 @@
+Post by fubar » Monday 16 July 2018 1:50
+
+An update for anyone interested in the xiaomi mi plug mini wifi version. It has the big advantage that once set up, you don't need to put it within range of a xiaomi aqara gateway - it can be anywhere your local wifi network will reach.
+
+The miio project is now available as python-miio http://python-miio.readthedocs.io/en/latest/
+
+I could not get the CLI to work with the old M1 model I got cheaply from gearbest - I updated the firmware as soon as I got it via the awful mihome app and that may have been a mistake as xiaomi sometimes upgrade the firmware to make it harder to use the device outside their ecosystem. Ain't capitalism grand?
+
+Fortunately the classes work fine when called directly in python, so I can switch on and off with some tiny python scripts - use:
+CODE: SELECT ALL
+
+miio discover
+to learn the token and ip for your device, then create a text file something like:
+CODE: SELECT ALL
+
+#!/usr/bin/python3
+import miio
+
+good = {'ok'}
+foo = miio.chuangmi_plug.ChuangmiPlug(ip="your device ip",debug=1,token="your device token")
+res = foo.on()
+# want to be able to rely on a non-zero exit to indicate failure to the calling script..
+if res==good:
+    exit(0)
+else:
+    exit(1)
+
+seems to do the needful.
+
+use foo.off() in a copy of the above script to turn it off.
+foo.status() can be used to get the status including temperature and power for printing if they're available.
+Mine shows:
+<ChuangmiPlugStatus power=False, usb_power=None, temperature=40load_power=None, wifi_led=None>
+
+I'll update here when I get these little scripts working in domoticz - I want to be able to control a heater...
